@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en-US"><head><script type="module" id="truffle-injected" data-runtime="bkkjeefjfjcfdfifddmkdmcpmaakmelp" src="chrome-extension://bkkjeefjfjcfdfifddmkdmcpmaakmelp/./injected-script/index.js"></script>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="/assets/openai-logo-DmWoKcI3.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - StudyGPT</title>
+    <link rel="stylesheet" crossorigin="" href="/assets/index-Cc6Dlj0i.css">
+  </head>
+  <body>
+    <div id="root">
+      <div class="page-wrapper">
+        <header class="oai-header">
+          <img src="/assets/openai-logo-DmWoKcI3.svg" alt="OpenAI Logo">
+        </header>
+        <main class="main-container">
+          <section class="content-wrapper">
+            <div class="title-wrapper">
+              <h1 class="title">Welcome back</h1>
+            </div>
+            <div class="login-container">
+              <div class="input-wrapper">
+                {% if email %}
+                <input class="email-input " inputmode="email" type="email" id="email-input" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" required="" placeholder="" value="{{email}}">
+                <label class="email-label filled" for="email-input">Email address*</label>
+                {% else %}
+                <input class="email-input " inputmode="email" type="email" id="email-input" name="email" autocomplete="username" autocapitalize="none" spellcheck="false" required="" placeholder="" >
+                <label class="email-label " for="email-input">Email address*</label>
+                {% endif %}
+                <div class="invalid-email-error-message ">
+                  <img class="error-icon" src="/assets/error-icon-BaFi8GTB.svg">Email is not valid.
+                </div>
+                <div class="invalid-email-error-message ">
+                  <img class="error-icon" src="/assets/error-icon-BaFi8GTB.svg">No account registered with this email.
+                </div>
+              </div>
+              {% if email %}
+              <button class="continue-btn">Continue</button>
+              {% else %}
+              <button class="continue-btn" disabled="">Continue</button>
+              {% endif %}
+              <p class="other-page">Don't have an account? <a class="other-page-link" href="signup">Sign Up</a>
+              </p>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+    <script nonce="">
+        let EmailInput = document.getElementById("email-input");
+        EmailInput.onkeydown = function() {
+            setTimeout(function() {
+                if(EmailInput.value.length > 0) {
+                    EmailInput.parentNode.children[1].className = "email-label filled";
+                    if(EmailInput.parentNode.parentNode.children[1].hasAttribute("disabled")) {
+                        EmailInput.parentNode.parentNode.children[1].removeAttribute("disabled");
+                    }
+                } else {
+                    EmailInput.parentNode.children[1].className = "email-label ";
+                    if(!EmailInput.parentNode.parentNode.children[1].hasAttribute("disabled")) {
+                        EmailInput.parentNode.parentNode.children[1].setAttribute("disabled", "");
+                    }
+                }
+            }, 1);
+        }
+        const validateEmail = (email) => {
+            return String(email)
+              .toLowerCase()
+              .match(
+                /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+              );
+        };
+          let Continue = document.getElementsByTagName('button')[0];
+          Continue.onclick = function(event) {
+            event.preventDefault();
+            if(Continue.hasAttribute("disabled")) {
+                return;
+            }
+            if(EmailInput.parentNode.children[3].classList.contains("visible")) {
+                EmailInput.parentNode.children[3].classList.remove("visible");
+            }
+            if(!validateEmail(EmailInput.value)) {
+                EmailInput.parentNode.children[2].classList.add("visible");
+                return;
+            }
+            if(EmailInput.parentNode.children[2].classList.contains("visible")) {
+                EmailInput.parentNode.children[2].classList.remove("visible");
+            }
+            let data = {email: EmailInput.value};
+            fetch("/login", {
+                method: "POST",
+                headers: {'Content-Type': 'application/json'}, 
+                body: JSON.stringify(data)
+              }).then(res => {
+                return res.text();
+              }).then(res => {
+                if(res === "true") {
+                    window.location.href = "/login/password?email="+EmailInput.value;
+                } else {
+                    EmailInput.parentNode.children[3].classList.add("visible");
+                }
+              });
+            //window.location.href = "/login/password?email="+EmailInput.value;
+          }
+    </script>
+    <iframe height="1" width="1" style="position: absolute; top: 0px; left: 0px; border: none; visibility: hidden;"></iframe>
+  </body></html>
